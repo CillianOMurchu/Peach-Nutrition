@@ -1,10 +1,6 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
-
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "types": [],
@@ -40,6 +36,8 @@
     "module": "NodeNext", // Use 'NodeNext' for modern Node.js module resolution
     "moduleResolution": "NodeNext", // Helps TypeScript understand how Node.js resolves modules
     "target": "ES2022", // Use a modern target for compatibility
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "rootDir": "./src",
+    "outDir": "./dist"
   }
 }

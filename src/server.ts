@@ -1,5 +1,6 @@
 // src/server.ts
 import express, { type Request, type Response } from "express";
+import { initializeDataSource } from './config/data-source.js';
 
 const app = express();
 // Use a port variable for easy configuration
@@ -13,6 +14,10 @@ app.get("/", (req: Request, res: Response) => {
   res.send({ message: "Peach Nutrition API is running!" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+// Call the initialization function, and only start the Express server 
+// if the database connection succeeds. This is crucial for reliability!
+initializeDataSource().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+    });
 });
