@@ -23,5 +23,18 @@ export const ProductService = {
     return products;
   },
 
-  // We will add logic for creating orders, calculating totals, etc., here later.
+  /**
+   * Handles business logic for product creation (e.g., validation).
+   * @param data - The raw product data from the controller.
+   * @returns A promise resolving to the newly created Product entity.
+   */
+  createNewProduct: async (data: Partial<Product>): Promise<Product> => {
+    // 💡 Business Logic Example: Here you might check permissions,
+    // validate fields (e.g., price > 0), or set default values.
+    if (!data.name || data.price === undefined) {
+      throw new Error("Product name and price are required.");
+    }
+    // Delegate saving to the Repository
+    return ProductRepository.create(data);
+  },
 };

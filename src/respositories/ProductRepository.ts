@@ -21,5 +21,16 @@ export const ProductRepository = {
         });
     },
 
-    // We will add more methods (findById, create, update, delete) later.
+    /**
+     * Creates and saves a new Product entity to the database.
+     * @param productData - Partial data for the new product.
+     * @returns A promise resolving to the created Product entity.
+     */
+    create: async (productData: Partial<Product>): Promise<Product> => {
+        // TypeORM's save method handles both insert and update.
+        // When passed a new object (without an ID), it inserts it.
+        const newProduct = repository.create(productData);
+        return repository.save(newProduct);
+    },
+
 };

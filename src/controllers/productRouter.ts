@@ -25,4 +25,20 @@ productRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// We will add more endpoints (e.g., POST /products) later.
+productRouter.post("/", async (req: Request, res: Response) => {
+  try {
+    const data = req.body; // Product data comes from the request body
+
+    const newProduct = await ProductService.createNewProduct(data);
+
+    // RESTful best practice: Use HTTP 201 Created status code
+    // and return the newly created resource.
+    return res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    // Handle specific validation errors differently in a real app
+    return res.status(400).json({
+      message: error instanceof Error ? error.message : "Invalid input data.",
+    });
+  }
+});
