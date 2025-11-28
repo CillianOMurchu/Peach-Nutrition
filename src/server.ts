@@ -1,23 +1,23 @@
-// src/server.ts
-import express, { type Request, type Response } from "express";
-import { initializeDataSource } from './config/data-source.js';
+// src/server.ts (Update this file)
+import express, { Request, Response } from "express";
+import { initializeDataSource } from "./config/data-source.js";
+import { productRouter } from "./controllers/productRouter.js";
 
 const app = express();
-// Use a port variable for easy configuration
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json()); // Middleware to parse incoming JSON bodies
+app.use(express.json());
 
-// Define a root endpoint (route)
+// API VERSIONING and Routing (RESTful best practice)
+app.use("/api/v1/products", productRouter); 
+
 app.get("/", (req: Request, res: Response) => {
-  // Send a JSON response as expected for an API
   res.send({ message: "Peach Nutrition API is running!" });
 });
 
-// Call the initialization function, and only start the Express server 
-// if the database connection succeeds. This is crucial for reliability!
 initializeDataSource().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running at http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Products endpoint: http://localhost:${PORT}/api/v1/products`);
+  });
 });
