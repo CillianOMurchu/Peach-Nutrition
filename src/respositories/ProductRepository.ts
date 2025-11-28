@@ -1,0 +1,25 @@
+import { AppDataSource } from "../config/data-source.js";
+import { Product } from "../entities/Product.js";
+
+// Get the standard TypeORM repository instance for the Product entity
+const repository = AppDataSource.getRepository(Product);
+
+/**
+ * Data Access Layer (Repository) for Products.
+ * This module handles direct interaction with the 'products' table.
+ */
+export const ProductRepository = {
+    /**
+     * Finds all available products in the database.
+     * @returns A promise resolving to an array of Product entities.
+     */
+    findAllAvailable: async (): Promise<Product[]> => {
+        return repository.find({ 
+            where: { isAvailable: true },
+            // Use relational database features to order by name or ID
+            order: { name: "ASC" } 
+        });
+    },
+
+    // We will add more methods (findById, create, update, delete) later.
+};
