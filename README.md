@@ -1,6 +1,6 @@
 # 🍑 Peach Nutrition API
 
-This project is the foundational backend API for the Peach Nutrition e-commerce platform. It provides complete data management (CRUD) for the product catalog using a modern, scalable **Layered Architecture** and **TypeScript**.
+This project is for the Peach Nutrition e-commerce platform. 
 
 ## 🚀 Key Technologies
 
