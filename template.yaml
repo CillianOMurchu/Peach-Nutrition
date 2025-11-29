@@ -1,0 +1,41 @@
+# template.yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Peach Nutrition Serverless Components for Asynchronous Tasks
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 256
+    Runtime: nodejs20.x # Use the modern Node.js runtime
+
+Resources:
+  # 1. Define the SQS Queue (The buffer for order messages)
+  OrderProcessingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: pn-order-queue
+
+  # 2. Define the Lambda Function (The serverless worker to process the queue)
+  OrderProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler # This will be the entry point of the compiled worker code
+      CodeUri: build-order-processor/ # The directory where the compiled code will be deployed from
+      Policies: # Grants permission for the Lambda to read and delete messages from the queue
+        - SQSReadWritePolicy:
+            QueueName: !GetAtt OrderProcessingQueue.QueueName
+      Events: # Defines the SQS Queue as the trigger source for this function
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt OrderProcessingQueue.Arn # Links the SQS ARN to the trigger
+            BatchSize: 10 # Lambda processes up to 10 messages from the queue at once
+
+Outputs:
+  OrderProcessingQueueURL:
+    Description: "URL of the SQS Queue for the Order Processor"
+    Value: !Ref OrderProcessingQueue
+  OrderProcessorFunctionArn:
+    Description: "ARN of the Order Processor Lambda Function"
+    Value: !GetAtt OrderProcessorFunction.Arn
