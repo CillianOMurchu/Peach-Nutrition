@@ -1,15 +1,12 @@
 import { SQSEvent, Context, SQSBatchResponse } from "aws-lambda";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"; // ⚠️ MISSING IMPORTS
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"; 
 
-// --- CONFIGURATION ---
 const REGION = "eu-north-1";
 const SENDER_EMAIL = "admin@peachrestore.com";
 const RECIPIENT_EMAIL = "cillian.murchu@gmail.com";
 
-// --- CLIENT INITIALIZATION ---
-const sesClient = new SESClient({ region: REGION }); // ⚠️ MISSING CLIENT
+const sesClient = new SESClient({ region: REGION });
 
-// Function to generate the email body from the order payload
 function createEmailBody(order: any) {
   let body = `New Order Received - ID: ${order.userId}\n\n`;
   body += `Order Date: ${order.orderDate}\n\n`;
@@ -21,7 +18,6 @@ function createEmailBody(order: any) {
   return body;
 }
 
-// Function to send the email using SES
 async function sendOrderEmail(order: any) {
   const emailBody = createEmailBody(order);
 
@@ -52,7 +48,6 @@ export const handler = async (
     try {
       const orderPayload = JSON.parse(record.body);
 
-      // ⚠️ NEW: Send the email
       await sendOrderEmail(orderPayload);
 
       console.log(

@@ -8,14 +8,12 @@ Globals:
     MemorySize: 128
 
 Resources:
-  # 1. Define the SQS Queue (The input source for the worker)
   OrderProcessingQueue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: OrderProcessingQueue
-      VisibilityTimeout: 60 # Set to match the Lambda timeout to prevent immediate reprocessing
+      VisibilityTimeout: 60 
 
-  # 2. Define the Lambda Function (The serverless worker to process the queue)
   OrderProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -38,8 +36,7 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt OrderProcessingQueue.Arn
-            BatchSize: 10 # Process up to 10 messages at once
-
+            BatchSize: 10 
       Environment:
         Variables:
           QUEUE_URL: !Ref OrderProcessingQueue
