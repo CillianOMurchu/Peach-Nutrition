@@ -20,5 +20,6 @@ initializeDataSource().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
     console.log(`Products endpoint: http://localhost:${PORT}/api/v1/products`);
+    console.log(`Orders endpoint: http://localhost:${PORT}/api/v1/orders`);
   });
 });
