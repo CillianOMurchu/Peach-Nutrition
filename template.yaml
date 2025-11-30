@@ -1,41 +1,53 @@
-# template.yaml
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: Peach Nutrition Serverless Components for Asynchronous Tasks
+Description: Peach Nutrition Order Processor and Infrastructure
 
 Globals:
   Function:
-    Timeout: 10
-    MemorySize: 256
-    Runtime: nodejs20.x # Use the modern Node.js runtime
+    Timeout: 5
+    MemorySize: 128
 
 Resources:
-  # 1. Define the SQS Queue (The buffer for order messages)
+  # 1. Define the SQS Queue (The input source for the worker)
   OrderProcessingQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: pn-order-queue
+      QueueName: OrderProcessingQueue
+      VisibilityTimeout: 60 # Set to match the Lambda timeout to prevent immediate reprocessing
 
   # 2. Define the Lambda Function (The serverless worker to process the queue)
   OrderProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: index.handler # This will be the entry point of the compiled worker code
-      CodeUri: build-order-processor/ # The directory where the compiled code will be deployed from
-      Policies: # Grants permission for the Lambda to read and delete messages from the queue
-        - SQSReadWritePolicy:
+      Handler: index.handler
+      CodeUri: build-order-processor/
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 10
+
+      Policies:
+        - SQSPollerPolicy:
             QueueName: !GetAtt OrderProcessingQueue.QueueName
-      Events: # Defines the SQS Queue as the trigger source for this function
-        SQSEvent:
+        - AWSLambdaBasicExecutionRole
+
+      Events:
+        OrderProcessor:
           Type: SQS
           Properties:
-            Queue: !GetAtt OrderProcessingQueue.Arn # Links the SQS ARN to the trigger
-            BatchSize: 10 # Lambda processes up to 10 messages from the queue at once
+            Queue: !GetAtt OrderProcessingQueue.Arn
+            BatchSize: 10 # Process up to 10 messages at once
+
+      Environment:
+        Variables:
+          QUEUE_URL: !Ref OrderProcessingQueue
 
 Outputs:
   OrderProcessingQueueURL:
     Description: "URL of the SQS Queue for the Order Processor"
     Value: !Ref OrderProcessingQueue
+
   OrderProcessorFunctionArn:
     Description: "ARN of the Order Processor Lambda Function"
     Value: !GetAtt OrderProcessorFunction.Arn

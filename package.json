@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "nodemon --exec \"node --loader ts-node/esm src/server.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sam-build": "sam build --use-container",
-    "sam-deploy": "sam deploy --stack-name PeachNutritionStack --s3-bucket peach-nutrition-deployment --capabilities CAPABILITY_IAM --region eu-north-1"
-    
+    "sam-build": "npx tsc worker-src/index.ts --outDir build-order-processor/ && sam build --use-container",
+    "sam-deploy": "sam deploy --stack-name PeachNutritionStack --s3-bucket peach-nutrition-deployment --capabilities CAPABILITY_IAM --region eu-north-1",
+    "delete-stack": "aws cloudformation delete-stack --stack-name PeachNutritionStack --region eu-north-1",
+    "await-stack-deletion": "aws cloudformation wait stack-delete-complete --stack-name PeachNutritionStack --region eu-north-1"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.159",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
