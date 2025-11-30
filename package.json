@@ -9,8 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "sam-build": "npx tsc worker-src/index.ts --outDir build-order-processor/ && sam build --use-container",
     "sam-deploy": "sam deploy --stack-name PeachNutritionStack --s3-bucket peach-nutrition-deployment --capabilities CAPABILITY_IAM --region eu-north-1",
-    "delete-stack": "aws cloudformation delete-stack --stack-name PeachNutritionStack --region eu-north-1",
-    "await-stack-deletion": "aws cloudformation wait stack-delete-complete --stack-name PeachNutritionStack --region eu-north-1"
+    "aws-delete-stack": "aws cloudformation delete-stack --stack-name PeachNutritionStack --region eu-north-1",
+    "aws-await-stack-deletion": "aws cloudformation wait stack-delete-complete --stack-name PeachNutritionStack --region eu-north-1"
   },
   "keywords": [],
   "author": "",

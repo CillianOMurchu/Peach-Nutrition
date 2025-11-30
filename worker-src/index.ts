@@ -1,4 +1,3 @@
-// worker-src/index.ts
 import { SQSEvent, Context, SQSBatchResponse } from 'aws-lambda';
 
 export const handler = async (event: SQSEvent, context: Context): Promise<SQSBatchResponse> => {
